@@ -79,6 +79,9 @@
       "power_draw": {
         "name": "Power draw"
       },
+      "energy": {
+        "name": "Energy"
+      },
       "cpu": {
         "name": "CPU utilization"
       },

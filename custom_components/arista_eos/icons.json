@@ -3,6 +3,7 @@
     "sensor": {
       "temperature": { "default": "mdi:thermometer" },
       "power_draw": { "default": "mdi:flash" },
+      "energy": { "default": "mdi:lightning-bolt" },
       "cpu": { "default": "mdi:cpu-64-bit" },
       "memory": { "default": "mdi:memory" },
       "last_boot": { "default": "mdi:clock-start" },

@@ -16,7 +16,7 @@ Per switch (created as a single Home Assistant **device**):
 | Category | Entities |
 | --- | --- |
 | Temperature | Max temperature, temperature alarm, per‑sensor temperatures\* |
-| Power | Total power draw, power‑supply status (+ per‑PSU power\* and per‑PSU problem\*) |
+| Power | Total power draw, cumulative energy (kWh), power‑supply status (+ per‑PSU power\* and per‑PSU problem\*) |
 | Cooling | Fan status (+ per‑fan speed\* and per‑fan problem\*) |
 | System | CPU %, memory %, last boot, EOS version, reload cause |
 | Interfaces† | Per‑interface link (connectivity) and inbound/outbound throughput |
@@ -134,6 +134,10 @@ automation:
 - Rack thermal and power dashboards alongside servers and PDUs.
 - Alerting on PSU/fan failure or link‑down on uplinks.
 - Correlating switch power draw with per‑circuit energy monitoring.
+- Tracking switch consumption in the **Energy dashboard**: the **Energy** sensor integrates the
+  switch's power draw into a cumulative kWh total (`device_class: energy`,
+  `state_class: total_increasing`), so it can be added under *Individual devices* directly — no
+  Riemann‑sum helper needed. The total is restored across restarts.
 
 ## Known limitations
 
@@ -142,6 +146,8 @@ automation:
 - Enabling interface monitoring on a high‑port‑count switch creates many entities; per‑interface
   entities are intended to be enabled selectively.
 - Per‑sensor / per‑PSU / per‑fan entities are disabled by default to keep the device tidy.
+- The **Energy** total is a left‑Riemann integration of the polled power draw; its accuracy scales
+  with the polling interval, and it only accumulates while the switch reports power.
 
 ## Troubleshooting
 

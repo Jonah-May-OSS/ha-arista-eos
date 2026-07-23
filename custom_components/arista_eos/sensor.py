@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from homeassistant.components.sensor import (
+    RestoreSensor,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -16,12 +17,14 @@ from homeassistant.const import (
     PERCENTAGE,
     EntityCategory,
     UnitOfDataRate,
+    UnitOfEnergy,
     UnitOfPower,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
+from homeassistant.util import dt as dt_util
 
 from .coordinator import AristaConfigEntry, AristaCoordinator
 from .data import EosData
@@ -110,6 +113,7 @@ async def async_setup_entry(
     entities: list[SensorEntity] = [
         AristaScalarSensor(coordinator, description) for description in SENSORS
     ]
+    entities.append(AristaEnergySensor(coordinator))
     async_add_entities(entities)
 
     known: set[str] = set()
@@ -178,6 +182,63 @@ class AristaScalarSensor(AristaEntity, SensorEntity):
     def native_value(self) -> StateType | datetime:
         """Return the current value."""
         return self.entity_description.value_fn(self.coordinator.data)
+
+
+class AristaEnergySensor(AristaEntity, RestoreSensor):
+    """Cumulative energy, integrated from the switch's total power draw.
+
+    The switch only reports instantaneous power (watts), which the Energy
+    dashboard cannot consume. This entity integrates that reading over time
+    (left Riemann sum at each poll) into a monotonic kWh total, so it can be
+    added to the Energy dashboard directly without a Riemann-sum helper. The
+    accumulated value is restored across restarts.
+    """
+
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_suggested_display_precision = 3
+    _attr_translation_key = "energy"
+
+    def __init__(self, coordinator: AristaCoordinator) -> None:
+        """Initialise the energy sensor."""
+        super().__init__(coordinator, "energy")
+        self._energy_kwh: float = 0.0
+        self._last_updated: datetime | None = None
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the accumulated total and register update handling."""
+        await super().async_added_to_hass()
+        last = await self.async_get_last_sensor_data()
+        if last is not None and isinstance(last.native_value, (int, float)):
+            self._energy_kwh = float(last.native_value)
+        # Establish the integration baseline so the first poll after startup
+        # does not accumulate energy over the (unknown) downtime interval.
+        if self.coordinator.data.total_output_power is not None:
+            self._last_updated = dt_util.utcnow()
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Integrate power over the elapsed interval, then write the state."""
+        power = self.coordinator.data.total_output_power
+        if power is not None:
+            now = dt_util.utcnow()
+            if self._last_updated is not None:
+                elapsed_hours = (now - self._last_updated).total_seconds() / 3600
+                if elapsed_hours > 0:
+                    self._energy_kwh += power * elapsed_hours / 1000
+            self._last_updated = now
+        super()._handle_coordinator_update()
+
+    @property
+    def available(self) -> bool:
+        """Return availability, matching the power draw the total is built from."""
+        return super().available and self.coordinator.data.total_output_power is not None
+
+    @property
+    def native_value(self) -> float:
+        """Return the accumulated energy in kWh."""
+        return round(self._energy_kwh, 6)
 
 
 class AristaPsuPowerSensor(AristaEntity, SensorEntity):

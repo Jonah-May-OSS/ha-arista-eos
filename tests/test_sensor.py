@@ -2,14 +2,23 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+from unittest.mock import patch
+
+import pytest
 from custom_components.arista_eos.const import (
     CONF_MONITOR_INTERFACES,
     CONF_MONITOR_TRANSCEIVERS,
     DOMAIN,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.components.sensor import SensorExtraStoredData
+from homeassistant.const import UnitOfEnergy
+from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers import entity_registry as er
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    mock_restore_cache_with_extra_data,
+)
 
 from .conftest import FakeSwitch, setup_integration
 
@@ -57,6 +66,50 @@ async def test_temperature_unavailable_without_environment(
     await setup_integration(hass, config_entry)
     assert hass.states.get("sensor.spine1_temperature").state == "unavailable"
     assert hass.states.get("sensor.spine1_power_draw").state == "unavailable"
+
+
+async def test_energy_sensor_integrates_power(
+    hass: HomeAssistant, config_entry: MockConfigEntry, switch: FakeSwitch
+) -> None:
+    """Energy is integrated from the power draw over the elapsed interval."""
+    clock = {"now": datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)}
+    with patch(
+        "custom_components.arista_eos.sensor.dt_util.utcnow",
+        side_effect=lambda: clock["now"],
+    ):
+        await setup_integration(hass, config_entry)
+        # Baseline established at startup; nothing accumulated yet.
+        assert hass.states.get("sensor.spine1_energy").state == "0.0"
+
+        # Advance one hour and poll again: 144.5 W for 1 h == 0.1445 kWh.
+        clock["now"] = datetime(2024, 1, 1, 1, 0, 0, tzinfo=UTC)
+        await config_entry.runtime_data.async_refresh()
+        await hass.async_block_till_done()
+
+    energy = hass.states.get("sensor.spine1_energy")
+    assert energy.attributes["device_class"] == "energy"
+    assert energy.attributes["state_class"] == "total_increasing"
+    assert energy.attributes["unit_of_measurement"] == "kWh"
+    assert float(energy.state) == pytest.approx(0.1445)
+
+
+async def test_energy_sensor_restores_total(
+    hass: HomeAssistant, config_entry: MockConfigEntry, switch: FakeSwitch
+) -> None:
+    """The accumulated energy total survives a restart."""
+    restored = SensorExtraStoredData(2.5, UnitOfEnergy.KILO_WATT_HOUR)
+    mock_restore_cache_with_extra_data(
+        hass,
+        ((State("sensor.spine1_energy", "2.5"), restored.as_dict()),),
+    )
+    now = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
+    with patch(
+        "custom_components.arista_eos.sensor.dt_util.utcnow",
+        return_value=now,
+    ):
+        await setup_integration(hass, config_entry)
+
+    assert float(hass.states.get("sensor.spine1_energy").state) == pytest.approx(2.5)
 
 
 async def test_interface_and_transceiver_sensors(
