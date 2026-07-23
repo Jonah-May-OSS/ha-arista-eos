@@ -50,7 +50,7 @@ commands.
 ### HACS (recommended)
 
 1. HACS → **⋮** → **Custom repositories**.
-2. Add `https://github.com/JonahMMay/ha-arista-eos` with category **Integration**.
+2. Add `https://github.com/Jonah-May-OSS/ha-arista-eos` with category **Integration**.
 3. Install **Arista EOS**, then restart Home Assistant.
 
 ### Manual
@@ -90,7 +90,7 @@ certificate. Turn it on only if the switch presents a certificate trusted by Hom
 
 A single `DataUpdateCoordinator` polls the switch on the configured interval using eAPI `runCmds`.
 System commands (`show version`, `show hostname`, `show processes top once`, `show reload cause`) run
-first; environment commands (`show environment temperature|power|cooling`) run separately so a
+first; environment commands (`show system environment temperature|power|cooling`) run separately so a
 platform without sensors cannot take down the system entities; interface/transceiver commands run
 only when their options are enabled. Authentication failures trigger the Home Assistant
 re‑authentication flow.
@@ -133,7 +133,7 @@ automation:
   and that Home Assistant can reach the management IP over HTTPS.
 - **`invalid_auth`** — the username/password/role is wrong; `network-operator` (or higher) is required.
 - **Environment entities unavailable** — expected on virtual platforms; otherwise confirm
-  `show environment temperature` returns data on the switch CLI.
+  `show system environment temperature` returns data on the switch CLI.
 - **Diagnostics** — download from the device page (**⋮ → Download diagnostics**); credentials are redacted.
 
 ## Removal
@@ -159,7 +159,7 @@ pytest
 [quality-scale]: https://developers.home-assistant.io/docs/core/integration-quality-scale/
 [hacs]: https://hacs.xyz/
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
-[validate-badge]: https://github.com/JonahMMay/ha-arista-eos/actions/workflows/validate.yml/badge.svg
-[validate-workflow]: https://github.com/JonahMMay/ha-arista-eos/actions/workflows/validate.yml
-[tests-badge]: https://github.com/JonahMMay/ha-arista-eos/actions/workflows/test.yml/badge.svg
-[tests-workflow]: https://github.com/JonahMMay/ha-arista-eos/actions/workflows/test.yml
+[validate-badge]: https://github.com/Jonah-May-OSS/ha-arista-eos/actions/workflows/validate.yml/badge.svg
+[validate-workflow]: https://github.com/Jonah-May-OSS/ha-arista-eos/actions/workflows/validate.yml
+[tests-badge]: https://github.com/Jonah-May-OSS/ha-arista-eos/actions/workflows/test.yml/badge.svg
+[tests-workflow]: https://github.com/Jonah-May-OSS/ha-arista-eos/actions/workflows/test.yml

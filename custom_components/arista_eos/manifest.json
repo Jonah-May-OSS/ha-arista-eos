@@ -26,10 +26,10 @@
       "macaddress": "FCBD67*"
     }
   ],
-  "documentation": "https://github.com/JonahMMay/ha-arista-eos",
+  "documentation": "https://github.com/Jonah-May-OSS/ha-arista-eos",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/JonahMMay/ha-arista-eos/issues",
+  "issue_tracker": "https://github.com/Jonah-May-OSS/ha-arista-eos/issues",
   "requirements": [],
   "version": "0.1.0"
 }
