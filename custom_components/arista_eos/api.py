@@ -8,6 +8,8 @@ Platinum ``async-dependency`` and ``inject-websession`` quality-scale rules.
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import ssl
 from typing import Any, Final
 
 import aiohttp
@@ -19,6 +21,25 @@ _COMMAND_API_PATH: Final = "/command-api"
 # EOS eAPI JSON-RPC error codes. 1002 is returned for command errors; the message
 # text is what distinguishes an unauthorized/unsupported command.
 _JSONRPC_COMMAND_ERROR: Final = 1002
+
+
+def create_ssl_context(verify_ssl: bool) -> ssl.SSLContext:
+    """Build an SSL context tolerant of legacy switch TLS.
+
+    Older EOS releases only offer TLS 1.0-1.2 with ciphers that modern OpenSSL
+    rejects at its default security level, causing a handshake failure. Lowering
+    the security level and TLS floor lets Home Assistant negotiate with them.
+
+    Loads CA data from disk, so call this off the event loop (executor).
+    """
+    context = ssl.create_default_context()
+    if not verify_ssl:
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+    context.minimum_version = ssl.TLSVersion.TLSv1
+    with contextlib.suppress(ssl.SSLError):  # cipher string depends on OpenSSL build
+        context.set_ciphers("DEFAULT@SECLEVEL=1")
+    return context
 
 
 class EosError(Exception):
@@ -55,8 +76,14 @@ class EosClient:
         port: int = 443,
         use_https: bool = True,
         timeout: int = DEFAULT_TIMEOUT,
+        ssl_context: ssl.SSLContext | bool = True,
     ) -> None:
-        """Initialise the client with an injected session and connection details."""
+        """Initialise the client with an injected session and connection details.
+
+        ``ssl_context`` is passed per-request to aiohttp: an ``ssl.SSLContext``
+        (e.g. from :func:`create_ssl_context`), ``True`` to verify with the default
+        context, or ``False`` to skip verification.
+        """
         self._session = session
         self._host = host
         self._username = username
@@ -64,6 +91,7 @@ class EosClient:
         self._port = port
         self._scheme = "https" if use_https else "http"
         self._timeout = timeout
+        self._ssl_context: ssl.SSLContext | bool = ssl_context
 
     @property
     def url(self) -> URL:
@@ -92,7 +120,9 @@ class EosClient:
 
         try:
             async with asyncio.timeout(self._timeout):
-                response = await self._session.post(self.url, json=payload, auth=auth)
+                response = await self._session.post(
+                    self.url, json=payload, auth=auth, ssl=self._ssl_context
+                )
                 if response.status in (401, 403):
                     raise EosAuthError("Authentication with the switch failed")
                 response.raise_for_status()

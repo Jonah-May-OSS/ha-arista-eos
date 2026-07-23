@@ -52,8 +52,10 @@ class FakeSession:
         self._post_exc = post_exc
         self.calls: list[dict[str, Any]] = []
 
-    async def post(self, url: Any, *, json: Any = None, auth: Any = None) -> FakeResponse:
-        self.calls.append({"url": url, "json": json, "auth": auth})
+    async def post(
+        self, url: Any, *, json: Any = None, auth: Any = None, ssl: Any = None
+    ) -> FakeResponse:
+        self.calls.append({"url": url, "json": json, "auth": auth, "ssl": ssl})
         if self._post_exc is not None:
             raise self._post_exc
         assert self._response is not None

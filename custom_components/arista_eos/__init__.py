@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import EosClient
+from .api import EosClient, create_ssl_context
 from .const import DOMAIN
 from .coordinator import AristaConfigEntry, AristaCoordinator
 
@@ -24,12 +24,14 @@ PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.SENSOR]
 async def async_setup_entry(hass: HomeAssistant, entry: AristaConfigEntry) -> bool:
     """Set up Arista EOS from a config entry."""
     session = async_get_clientsession(hass, verify_ssl=entry.data[CONF_VERIFY_SSL])
+    ssl_context = await hass.async_add_executor_job(create_ssl_context, entry.data[CONF_VERIFY_SSL])
     client = EosClient(
         session,
         entry.data[CONF_HOST],
         entry.data[CONF_USERNAME],
         entry.data[CONF_PASSWORD],
         port=entry.data[CONF_PORT],
+        ssl_context=ssl_context,
     )
     coordinator = AristaCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()

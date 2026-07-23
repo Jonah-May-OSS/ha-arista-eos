@@ -22,7 +22,13 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import format_mac
 
-from .api import EosAuthError, EosClient, EosCommandError, EosConnectionError
+from .api import (
+    EosAuthError,
+    EosClient,
+    EosCommandError,
+    EosConnectionError,
+    create_ssl_context,
+)
 from .const import (
     CMD_HOSTNAME,
     CMD_VERSION,
@@ -58,12 +64,14 @@ async def _async_validate(hass: HomeAssistant, data: Mapping[str, Any]) -> dict[
     Raises EosAuthError / EosConnectionError / EosCommandError on failure.
     """
     session = async_get_clientsession(hass, verify_ssl=data[CONF_VERIFY_SSL])
+    ssl_context = await hass.async_add_executor_job(create_ssl_context, data[CONF_VERIFY_SSL])
     client = EosClient(
         session,
         data[CONF_HOST],
         data[CONF_USERNAME],
         data[CONF_PASSWORD],
         port=data[CONF_PORT],
+        ssl_context=ssl_context,
     )
     LOGGER.debug(
         "Validating Arista eAPI at %s:%s (verify_ssl=%s, user=%s)",
