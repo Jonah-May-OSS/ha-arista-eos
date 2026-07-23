@@ -26,20 +26,22 @@ async def test_scalar_sensor_states(
     assert hass.states.get("sensor.spine1_reload_cause").state == ("Reload requested by the user.")
 
 
-async def test_per_unit_sensors_disabled_by_default(
+async def test_per_unit_value_sensors_enabled_by_default(
     hass: HomeAssistant, config_entry: MockConfigEntry, switch: FakeSwitch
 ) -> None:
-    """Per-PSU/sensor/fan entities are created but disabled by default."""
+    """Per-unit value sensors are enabled; redundant problem flags stay disabled."""
     await setup_integration(hass, config_entry)
     registry = er.async_get(hass)
 
-    entity_id = registry.async_get_entity_id("sensor", DOMAIN, "JPE12345678_psu_1_power")
-    assert entity_id is not None
-    entry = registry.async_get(entity_id)
-    assert entry is not None
-    assert entry.disabled is True
-    # Disabled entities have no state.
-    assert hass.states.get(entity_id) is None
+    power_id = registry.async_get_entity_id("sensor", DOMAIN, "JPE12345678_psu_1_power")
+    assert power_id is not None
+    assert registry.async_get(power_id).disabled is False
+    assert hass.states.get(power_id).state == "73.5"
+
+    # The redundant per-unit problem flag remains disabled by default.
+    problem_id = registry.async_get_entity_id("binary_sensor", DOMAIN, "JPE12345678_psu_1_problem")
+    assert problem_id is not None
+    assert registry.async_get(problem_id).disabled is True
 
 
 async def test_temperature_unavailable_without_environment(

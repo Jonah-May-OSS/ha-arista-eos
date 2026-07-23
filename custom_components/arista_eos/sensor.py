@@ -186,7 +186,6 @@ class AristaPsuPowerSensor(AristaEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.POWER
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_entity_registry_enabled_default = False
     _attr_translation_key = "psu_power"
 
     def __init__(self, coordinator: AristaCoordinator, name: str) -> None:
@@ -215,7 +214,6 @@ class AristaTempSensor(AristaEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_entity_registry_enabled_default = False
     _attr_translation_key = "temp_sensor"
 
     def __init__(self, coordinator: AristaCoordinator, name: str) -> None:
@@ -243,7 +241,6 @@ class AristaFanSpeedSensor(AristaEntity, SensorEntity):
 
     _attr_native_unit_of_measurement = PERCENTAGE
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_entity_registry_enabled_default = False
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_translation_key = "fan_speed"
 

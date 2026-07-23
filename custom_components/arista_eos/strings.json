@@ -73,27 +73,65 @@
   },
   "entity": {
     "sensor": {
-      "temperature": { "name": "Temperature" },
-      "power_draw": { "name": "Power draw" },
-      "cpu": { "name": "CPU utilization" },
-      "memory": { "name": "Memory utilization" },
-      "last_boot": { "name": "Last boot" },
-      "eos_version": { "name": "EOS version" },
-      "reload_cause": { "name": "Reload cause" },
-      "psu_power": { "name": "PSU {unit} power" },
-      "temp_sensor": { "name": "Sensor {sensor} temperature" },
-      "fan_speed": { "name": "Fan {fan} speed" },
-      "interface_in": { "name": "{interface} inbound" },
-      "interface_out": { "name": "{interface} outbound" },
-      "transceiver_temp": { "name": "{interface} transceiver temperature" }
+      "temperature": {
+        "name": "Temperature"
+      },
+      "power_draw": {
+        "name": "Power draw"
+      },
+      "cpu": {
+        "name": "CPU utilization"
+      },
+      "memory": {
+        "name": "Memory utilization"
+      },
+      "last_boot": {
+        "name": "Last boot"
+      },
+      "eos_version": {
+        "name": "EOS version"
+      },
+      "reload_cause": {
+        "name": "Reload cause"
+      },
+      "psu_power": {
+        "name": "PSU {unit} power"
+      },
+      "temp_sensor": {
+        "name": "{sensor} temperature"
+      },
+      "fan_speed": {
+        "name": "Fan {fan} speed"
+      },
+      "interface_in": {
+        "name": "{interface} inbound"
+      },
+      "interface_out": {
+        "name": "{interface} outbound"
+      },
+      "transceiver_temp": {
+        "name": "{interface} transceiver temperature"
+      }
     },
     "binary_sensor": {
-      "temperature_alarm": { "name": "Temperature alarm" },
-      "psu_status": { "name": "Power supply status" },
-      "fan_status": { "name": "Fan status" },
-      "psu_problem": { "name": "PSU {unit} problem" },
-      "fan_problem": { "name": "Fan {fan} problem" },
-      "interface_link": { "name": "{interface} link" }
+      "temperature_alarm": {
+        "name": "Temperature alarm"
+      },
+      "psu_status": {
+        "name": "Power supply status"
+      },
+      "fan_status": {
+        "name": "Fan status"
+      },
+      "psu_problem": {
+        "name": "PSU {unit} problem"
+      },
+      "fan_problem": {
+        "name": "Fan {fan} problem"
+      },
+      "interface_link": {
+        "name": "{interface} link"
+      }
     }
   },
   "exceptions": {

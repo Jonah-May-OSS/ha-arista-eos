@@ -64,7 +64,11 @@ rules:
       runtime-discovered child devices; per-unit hardware is modeled as entities.
   entity-category: done
   entity-device-class: done
-  entity-disabled-by-default: done
+  entity-disabled-by-default:
+    status: done
+    comment: >-
+      Redundant per-unit problem flags are disabled by default; high-cardinality
+      interface/transceiver entities are created only when their option is enabled.
   entity-translations: done
   exception-translations: done
   icon-translations: done
