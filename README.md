@@ -49,14 +49,30 @@ commands.
 
 ### HACS (recommended)
 
-1. HACS → **⋮** → **Custom repositories**.
-2. Add `https://github.com/Jonah-May-OSS/ha-arista-eos` with category **Integration**.
-3. Install **Arista EOS**, then restart Home Assistant.
+HACS must be installed first. Installing through HACS means you get updates automatically.
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Jonah-May-OSS&repository=ha-arista-eos&category=integration)
+
+Click the button above to add this repository to HACS, then choose **Download** and restart Home Assistant.
+
+<details>
+<summary>…or add the repository manually</summary>
+
+1. In HACS, open the **⋮** menu (top‑right) → **Custom repositories**.
+2. Repository: `https://github.com/Jonah-May-OSS/ha-arista-eos` — Category: **Integration**.
+3. Click **Add**, then find **Arista EOS** in HACS, choose **Download**, and restart Home Assistant.
+
+</details>
 
 ### Manual
 
-Copy `custom_components/arista_eos` into your Home Assistant `config/custom_components/` directory
-and restart.
+1. Download the latest release from the [releases page](https://github.com/Jonah-May-OSS/ha-arista-eos/releases).
+2. Copy the `custom_components/arista_eos` folder into your Home Assistant `config/custom_components/` directory.
+3. Restart Home Assistant.
+
+## Add the integration
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=arista_eos)
 
 ## Configuration
 
