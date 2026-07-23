@@ -1,0 +1,22 @@
+{
+  "domain": "arista_eos",
+  "name": "Arista EOS",
+  "codeowners": ["@JonahMMay"],
+  "config_flow": true,
+  "dependencies": [],
+  "dhcp": [
+    { "macaddress": "001C73*" },
+    { "macaddress": "444CA8*" },
+    { "macaddress": "7483EF*" },
+    { "macaddress": "985D82*" },
+    { "macaddress": "C0D682*" },
+    { "macaddress": "FCBD67*" }
+  ],
+  "documentation": "https://github.com/JonahMMay/ha-arista-eos",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/JonahMMay/ha-arista-eos/issues",
+  "quality_scale": "platinum",
+  "requirements": [],
+  "version": "0.1.0"
+}

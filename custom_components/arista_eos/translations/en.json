@@ -1,0 +1,117 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Connect to an Arista switch",
+        "description": "Enter the management address and eAPI credentials for the switch. eAPI must be enabled (`management api http-commands`).",
+        "data": {
+          "host": "Host",
+          "username": "Username",
+          "password": "Password",
+          "port": "Port",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "data_description": {
+          "host": "Hostname or management IP address of the switch.",
+          "port": "eAPI HTTPS port (default 443).",
+          "verify_ssl": "Enable only if the switch presents a certificate trusted by Home Assistant. Off by default because switches usually use self-signed certificates."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate with the switch",
+        "description": "The credentials for {host} are no longer valid. Enter new eAPI credentials.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure the Arista switch",
+        "description": "Update the connection details. The switch serial number must match the existing device.",
+        "data": {
+          "host": "Host",
+          "username": "Username",
+          "password": "Password",
+          "port": "Port",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "data_description": {
+          "host": "Hostname or management IP address of the switch.",
+          "port": "eAPI HTTPS port (default 443).",
+          "verify_ssl": "Enable only if the switch presents a trusted certificate."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect. Check the host, port, and that eAPI is enabled.",
+      "invalid_auth": "Invalid authentication."
+    },
+    "abort": {
+      "already_configured": "This switch is already configured.",
+      "reauth_successful": "Re-authentication was successful.",
+      "reconfigure_successful": "Reconfiguration was successful.",
+      "wrong_device": "The credentials are for a different switch than the one configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Arista EOS options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)",
+          "monitor_interfaces": "Monitor interfaces",
+          "monitor_transceivers": "Monitor transceivers"
+        },
+        "data_description": {
+          "scan_interval": "How often to poll the switch, in seconds.",
+          "monitor_interfaces": "Create per-interface link and throughput entities (high entity count).",
+          "monitor_transceivers": "Create per-transceiver temperature entities."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": { "name": "Temperature" },
+      "power_draw": { "name": "Power draw" },
+      "cpu": { "name": "CPU utilization" },
+      "memory": { "name": "Memory utilization" },
+      "last_boot": { "name": "Last boot" },
+      "eos_version": { "name": "EOS version" },
+      "reload_cause": { "name": "Reload cause" },
+      "psu_power": { "name": "PSU {unit} power" },
+      "temp_sensor": { "name": "Sensor {sensor} temperature" },
+      "fan_speed": { "name": "Fan {fan} speed" },
+      "interface_in": { "name": "{interface} inbound" },
+      "interface_out": { "name": "{interface} outbound" },
+      "transceiver_temp": { "name": "{interface} transceiver temperature" }
+    },
+    "binary_sensor": {
+      "temperature_alarm": { "name": "Temperature alarm" },
+      "psu_status": { "name": "Power supply status" },
+      "fan_status": { "name": "Fan status" },
+      "psu_problem": { "name": "PSU {unit} problem" },
+      "fan_problem": { "name": "Fan {fan} problem" },
+      "interface_link": { "name": "{interface} link" }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Authentication with the switch failed; the credentials may have changed."
+    }
+  },
+  "issues": {
+    "no_environment_support": {
+      "title": "Environment monitoring unavailable on {name}",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Environment monitoring unavailable",
+            "description": "{name} did not respond to environment commands (`show environment ...`). This is expected on virtual platforms (vEOS/cEOS), which have no physical sensors. Temperature, power, and fan entities will remain unavailable. Confirm to dismiss this notice."
+          }
+        }
+      }
+    }
+  }
+}

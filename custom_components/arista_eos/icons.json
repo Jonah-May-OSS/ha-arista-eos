@@ -1,0 +1,27 @@
+{
+  "entity": {
+    "sensor": {
+      "temperature": { "default": "mdi:thermometer" },
+      "power_draw": { "default": "mdi:flash" },
+      "cpu": { "default": "mdi:cpu-64-bit" },
+      "memory": { "default": "mdi:memory" },
+      "last_boot": { "default": "mdi:clock-start" },
+      "eos_version": { "default": "mdi:tag-outline" },
+      "reload_cause": { "default": "mdi:history" },
+      "psu_power": { "default": "mdi:power-plug" },
+      "temp_sensor": { "default": "mdi:thermometer-lines" },
+      "fan_speed": { "default": "mdi:fan" },
+      "interface_in": { "default": "mdi:download-network" },
+      "interface_out": { "default": "mdi:upload-network" },
+      "transceiver_temp": { "default": "mdi:thermometer" }
+    },
+    "binary_sensor": {
+      "temperature_alarm": { "default": "mdi:thermometer-alert" },
+      "psu_status": { "default": "mdi:power-plug" },
+      "fan_status": { "default": "mdi:fan-alert" },
+      "psu_problem": { "default": "mdi:power-plug-off" },
+      "fan_problem": { "default": "mdi:fan-alert" },
+      "interface_link": { "default": "mdi:ethernet" }
+    }
+  }
+}
