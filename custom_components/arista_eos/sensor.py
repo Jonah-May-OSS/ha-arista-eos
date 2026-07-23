@@ -241,7 +241,7 @@ class AristaTempSensor(AristaEntity, SensorEntity):
 class AristaFanSpeedSensor(AristaEntity, SensorEntity):
     """Speed for a single fan on the switch."""
 
-    _attr_native_unit_of_measurement = "RPM"
+    _attr_native_unit_of_measurement = PERCENTAGE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_entity_registry_enabled_default = False
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -260,7 +260,7 @@ class AristaFanSpeedSensor(AristaEntity, SensorEntity):
 
     @property
     def native_value(self) -> int | None:
-        """Return the fan speed in RPM."""
+        """Return the fan speed as a percentage of maximum."""
         for fan in self.coordinator.data.fans:
             if fan.name == self._name:
                 return fan.speed

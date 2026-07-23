@@ -13,14 +13,11 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import EosAuthError, EosClient, EosCommandError, EosConnectionError
 from .const import (
-    CMD_COOLING,
     CMD_HOSTNAME,
     CMD_INTERFACES_RATES,
     CMD_INTERFACES_STATUS,
-    CMD_POWER,
     CMD_PROCESSES,
     CMD_RELOAD_CAUSE,
-    CMD_TEMPERATURE,
     CMD_TRANSCEIVERS,
     CMD_VERSION,
     CONF_MONITOR_INTERFACES,
@@ -31,6 +28,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ENV_COMMANDS,
+    ENV_COMMANDS_LEGACY,
     INTERFACE_COMMANDS,
     ISSUE_NO_ENVIRONMENT,
     LOGGER,
@@ -119,6 +117,23 @@ class AristaCoordinator(DataUpdateCoordinator[EosData]):
             translation_placeholders={"name": self.config_entry.title},
         )
 
+    async def _fetch_environment(
+        self,
+    ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
+        """Return (temperature, power, cooling) payloads, or None if unsupported.
+
+        Tries the modern command set first, then the legacy set; a command error
+        on both means the platform has no environment sensors.
+        """
+        for commands in (ENV_COMMANDS, ENV_COMMANDS_LEGACY):
+            try:
+                results = await self.client.run_cmds(list(commands))
+            except EosCommandError:
+                continue
+            temperature, power, cooling = results
+            return temperature, power, cooling
+        return None
+
     async def _run(self, cmds: tuple[str, ...] | list[str]) -> dict[str, dict[str, Any]]:
         """Run a batch of commands and map each command to its result."""
         results = await self.client.run_cmds(list(cmds))
@@ -137,17 +152,18 @@ class AristaCoordinator(DataUpdateCoordinator[EosData]):
 
         data = _parse_system(system)
 
-        # Environment is optional (absent on virtual platforms). Failures here must
-        # not take down the whole update; log once and mark environment unsupported.
+        # Environment is optional (absent on virtual platforms) and the command
+        # names changed across EOS releases, so the modern "show system
+        # environment" form is tried first, then the legacy "show environment" form.
         try:
-            env = await self._run(ENV_COMMANDS)
-        except EosCommandError:
-            self._set_environment_supported(supported=False)
+            env = await self._fetch_environment()
         except EosConnectionError as err:
             raise UpdateFailed(str(err)) from err
+        if env is None:
+            self._set_environment_supported(supported=False)
         else:
             self._set_environment_supported(supported=True)
-            _parse_environment(env, data)
+            _parse_environment(*env, data)
 
         if self._monitor_interfaces:
             try:
@@ -263,15 +279,18 @@ def _iter_temp_sensors(payload: dict[str, Any]) -> list[TempSensor]:
     return sensors
 
 
-def _parse_environment(results: dict[str, dict[str, Any]], data: EosData) -> None:
-    """Parse environment temperature/power/cooling into data (in place)."""
-    temperature = results.get(CMD_TEMPERATURE, {})
+def _parse_environment(
+    temperature: dict[str, Any],
+    power: dict[str, Any],
+    cooling: dict[str, Any],
+    data: EosData,
+) -> None:
+    """Parse environment temperature/power/cooling payloads into data (in place)."""
     data.temp_status = temperature.get("systemStatus")
     data.temp_sensors = _iter_temp_sensors(temperature)
     readings = [s.current for s in data.temp_sensors if s.current is not None]
     data.max_temperature = round(max(readings), 1) if readings else None
 
-    power = results.get(CMD_POWER, {})
     supplies = power.get("powerSupplies")
     total = 0.0
     have_power = False
@@ -295,7 +314,6 @@ def _parse_environment(results: dict[str, dict[str, Any]], data: EosData) -> Non
             )
     data.total_output_power = round(total, 1) if have_power else None
 
-    cooling = results.get(CMD_COOLING, {})
     data.fan_status = cooling.get("systemStatus")
     for group_key in ("fanTraySlots", "powerSupplySlots"):
         group = cooling.get(group_key)

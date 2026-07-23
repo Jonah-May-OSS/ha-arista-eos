@@ -23,7 +23,7 @@ async def test_psu_status_problem(
     hass: HomeAssistant, config_entry: MockConfigEntry, switch: FakeSwitch
 ) -> None:
     """A failed PSU turns the power supply status problem on."""
-    switch.responses["show environment power"]["powerSupplies"]["1"]["state"] = "powerLoss"
+    switch.responses["show system environment power"]["powerSupplies"]["1"]["state"] = "powerLoss"
     await setup_integration(hass, config_entry)
     assert hass.states.get("binary_sensor.spine1_power_supply_status").state == "on"
 

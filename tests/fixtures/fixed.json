@@ -37,59 +37,161 @@
     ],
     "kernelCrashData": []
   },
-  "show environment temperature": {
+  "show interfaces status": {
+    "interfaceStatuses": {
+      "Ethernet1": {
+        "linkStatus": "connected",
+        "lineProtocolStatus": "up",
+        "description": "uplink-a",
+        "bandwidth": 25000000000,
+        "interfaceType": "25GBASE-SR",
+        "duplex": "duplexFull"
+      },
+      "Ethernet2": {
+        "linkStatus": "notconnect",
+        "lineProtocolStatus": "down",
+        "description": "",
+        "bandwidth": 25000000000,
+        "interfaceType": "25GBASE-SR"
+      }
+    }
+  },
+  "show interfaces counters rates": {
+    "interfaces": {
+      "Ethernet1": {
+        "inBpsRate": 125000000.0,
+        "outBpsRate": 98000000.0,
+        "inPpsRate": 15000.0,
+        "outPpsRate": 12000.0
+      },
+      "Ethernet2": {
+        "inBpsRate": 0.0,
+        "outBpsRate": 0.0,
+        "inPpsRate": 0.0,
+        "outPpsRate": 0.0
+      }
+    }
+  },
+  "show interfaces transceiver": {
+    "interfaces": {
+      "Ethernet1": {
+        "temperature": 38.2,
+        "txPower": -2.1,
+        "rxPower": -3.4,
+        "voltage": 3.3,
+        "txBias": 7.5,
+        "updateTime": 1737600000.0
+      },
+      "Ethernet2": {}
+    }
+  },
+  "show system environment temperature": {
     "powerSupplySlots": [
       {
         "entPhysicalClass": "powerSupply",
         "relPos": "1",
         "tempSensors": [
-          {"name": "PowerSupply1/1", "description": "Power supply 1 sensor", "hwStatus": "ok", "currentTemperature": 33.0, "inAlertState": false}
+          {
+            "name": "PowerSupply1/1",
+            "description": "Power supply 1 sensor",
+            "hwStatus": "ok",
+            "currentTemperature": 33.0,
+            "inAlertState": false
+          }
         ]
       }
     ],
     "tempSensors": [
-      {"name": "TempSensor1", "description": "Cpu board temp sensor", "hwStatus": "ok", "currentTemperature": 45.5, "inAlertState": false},
-      {"name": "TempSensor2", "description": "Front-panel temp sensor", "hwStatus": "ok", "currentTemperature": 41.0, "inAlertState": false}
+      {
+        "name": "TempSensor1",
+        "description": "Cpu board temp sensor",
+        "hwStatus": "ok",
+        "currentTemperature": 45.5,
+        "inAlertState": false
+      },
+      {
+        "name": "TempSensor2",
+        "description": "Front-panel temp sensor",
+        "hwStatus": "ok",
+        "currentTemperature": 41.0,
+        "inAlertState": false
+      }
     ],
     "systemStatus": "temperatureOk",
     "shutdownOnOverheat": true,
     "cardSlots": []
   },
-  "show environment power": {
+  "show system environment power": {
     "powerSupplies": {
-      "1": {"modelName": "PWR-750AC-F", "capacity": 750.0, "inputCurrent": 0.62, "outputCurrent": 6.1, "state": "ok", "inputVoltage": 118.0, "outputVoltage": 12.1, "managed": true, "outputPower": 73.5, "tempSensors": {}},
-      "2": {"modelName": "PWR-750AC-F", "capacity": 750.0, "inputCurrent": 0.6, "outputCurrent": 5.9, "state": "ok", "inputVoltage": 118.2, "outputVoltage": 12.1, "managed": true, "outputPower": 71.0, "tempSensors": {}}
+      "1": {
+        "modelName": "PWR-750AC-F",
+        "capacity": 750.0,
+        "inputCurrent": 0.62,
+        "outputCurrent": 6.1,
+        "state": "ok",
+        "inputVoltage": 118.0,
+        "outputVoltage": 12.1,
+        "managed": true,
+        "outputPower": 73.5,
+        "tempSensors": {}
+      },
+      "2": {
+        "modelName": "PWR-750AC-F",
+        "capacity": 750.0,
+        "inputCurrent": 0.6,
+        "outputCurrent": 5.9,
+        "state": "ok",
+        "inputVoltage": 118.2,
+        "outputVoltage": 12.1,
+        "managed": true,
+        "outputPower": 71.0,
+        "tempSensors": {}
+      }
     }
   },
-  "show environment cooling": {
+  "show system environment cooling": {
     "systemStatus": "coolingOk",
     "fanTraySlots": [
-      {"label": "1", "status": "ok", "fans": [{"label": "1/1", "status": "ok", "speed": 30, "actualSpeed": 5100}]},
-      {"label": "2", "status": "ok", "fans": [{"label": "2/1", "status": "ok", "speed": 30, "actualSpeed": 5050}]}
+      {
+        "label": "1",
+        "status": "ok",
+        "fans": [
+          {
+            "label": "1/1",
+            "status": "ok",
+            "speed": 30,
+            "actualSpeed": 30
+          }
+        ]
+      },
+      {
+        "label": "2",
+        "status": "ok",
+        "fans": [
+          {
+            "label": "2/1",
+            "status": "ok",
+            "speed": 30,
+            "actualSpeed": 31
+          }
+        ]
+      }
     ],
     "powerSupplySlots": [
-      {"label": "PowerSupply1", "fans": [{"label": "PowerSupply1/1", "status": "ok", "speed": 35, "actualSpeed": 6000}]}
+      {
+        "label": "PowerSupply1",
+        "fans": [
+          {
+            "label": "PowerSupply1/1",
+            "status": "ok",
+            "speed": 35,
+            "actualSpeed": 35
+          }
+        ]
+      }
     ],
     "ambientTemperature": 24.0,
     "shutdownOnInsufficientFans": true,
     "coolingMode": "automatic"
-  },
-  "show interfaces status": {
-    "interfaceStatuses": {
-      "Ethernet1": {"linkStatus": "connected", "lineProtocolStatus": "up", "description": "uplink-a", "bandwidth": 25000000000, "interfaceType": "25GBASE-SR", "duplex": "duplexFull"},
-      "Ethernet2": {"linkStatus": "notconnect", "lineProtocolStatus": "down", "description": "", "bandwidth": 25000000000, "interfaceType": "25GBASE-SR"}
-    }
-  },
-  "show interfaces counters rates": {
-    "interfaces": {
-      "Ethernet1": {"inBpsRate": 125000000.0, "outBpsRate": 98000000.0, "inPpsRate": 15000.0, "outPpsRate": 12000.0},
-      "Ethernet2": {"inBpsRate": 0.0, "outBpsRate": 0.0, "inPpsRate": 0.0, "outPpsRate": 0.0}
-    }
-  },
-  "show interfaces transceiver": {
-    "interfaces": {
-      "Ethernet1": {"temperature": 38.2, "txPower": -2.1, "rxPower": -3.4, "voltage": 3.3, "txBias": 7.5, "updateTime": 1737600000.0},
-      "Ethernet2": {}
-    }
   }
 }

@@ -47,7 +47,7 @@ async def test_per_unit_sensor_values_and_missing(
     assert AristaTempSensor(coordinator, "missing").native_value is None
     assert AristaTempSensor(coordinator, "missing").available is False
 
-    assert AristaFanSpeedSensor(coordinator, "1/1").native_value == 5100
+    assert AristaFanSpeedSensor(coordinator, "1/1").native_value == 30
     assert AristaFanSpeedSensor(coordinator, "missing").native_value is None
     assert AristaFanSpeedSensor(coordinator, "missing").available is False
 
@@ -84,13 +84,11 @@ def test_parse_environment_malformed() -> None:
     data = EosData(serial="s", hostname="h", model="m", version="v")
     _parse_environment(
         {
-            "show environment temperature": {
-                "tempSensors": "not-a-list",
-                "cardSlots": [1, {"tempSensors": [{"currentTemperature": 50.0}]}],
-            },
-            "show environment power": {"powerSupplies": "not-a-dict"},
-            "show environment cooling": {"fanTraySlots": [1, {"fans": "x"}, {"fans": [1, {}]}]},
+            "tempSensors": "not-a-list",
+            "cardSlots": [1, {"tempSensors": [{"currentTemperature": 50.0}]}],
         },
+        {"powerSupplies": "not-a-dict"},
+        {"fanTraySlots": [1, {"fans": "x"}, {"fans": [1, {}]}]},
         data,
     )
     assert data.total_output_power is None

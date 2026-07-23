@@ -47,9 +47,9 @@ async def test_temperature_unavailable_without_environment(
 ) -> None:
     """Environment sensors report unavailable on platforms without sensors."""
     for cmd in (
-        "show environment temperature",
-        "show environment power",
-        "show environment cooling",
+        "show system environment temperature",
+        "show system environment power",
+        "show system environment cooling",
     ):
         switch.responses.pop(cmd)
     await setup_integration(hass, config_entry)

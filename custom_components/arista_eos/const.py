@@ -31,9 +31,13 @@ CMD_VERSION: Final = "show version"
 CMD_HOSTNAME: Final = "show hostname"
 CMD_PROCESSES: Final = "show processes top once"
 CMD_RELOAD_CAUSE: Final = "show reload cause"
-CMD_TEMPERATURE: Final = "show environment temperature"
-CMD_POWER: Final = "show environment power"
-CMD_COOLING: Final = "show environment cooling"
+CMD_TEMPERATURE: Final = "show system environment temperature"
+CMD_POWER: Final = "show system environment power"
+CMD_COOLING: Final = "show system environment cooling"
+# Legacy forms (deprecated on modern EOS, still present on older releases).
+CMD_TEMPERATURE_LEGACY: Final = "show environment temperature"
+CMD_POWER_LEGACY: Final = "show environment power"
+CMD_COOLING_LEGACY: Final = "show environment cooling"
 CMD_INTERFACES_STATUS: Final = "show interfaces status"
 CMD_INTERFACES_RATES: Final = "show interfaces counters rates"
 CMD_TRANSCEIVERS: Final = "show interfaces transceiver"
@@ -42,7 +46,10 @@ CMD_TRANSCEIVERS: Final = "show interfaces transceiver"
 # succeed for the integration to be considered up.
 SYSTEM_COMMANDS: Final = (CMD_VERSION, CMD_HOSTNAME, CMD_PROCESSES, CMD_RELOAD_CAUSE)
 # Environment commands are absent on virtual platforms; failure is tolerated.
+# The modern "show system environment ..." form is tried first, then the legacy
+# "show environment ..." form for older EOS. Both keep temperature/power/cooling order.
 ENV_COMMANDS: Final = (CMD_TEMPERATURE, CMD_POWER, CMD_COOLING)
+ENV_COMMANDS_LEGACY: Final = (CMD_TEMPERATURE_LEGACY, CMD_POWER_LEGACY, CMD_COOLING_LEGACY)
 INTERFACE_COMMANDS: Final = (CMD_INTERFACES_STATUS, CMD_INTERFACES_RATES)
 
 # Repair issue identifiers

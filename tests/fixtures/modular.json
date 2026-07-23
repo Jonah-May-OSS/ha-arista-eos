@@ -12,41 +12,148 @@
     "hardwareRevision": "20.01",
     "uptime": 987654.0
   },
-  "show hostname": {"hostname": "core1", "fqdn": "core1.example.net"},
-  "show processes top once": {
-    "cpuInfo": {"%Cpu(s)": {"user": 5.0, "system": 2.5, "nice": 0.0, "idle": 92.0, "iowait": 0.5}}
+  "show hostname": {
+    "hostname": "core1",
+    "fqdn": "core1.example.net"
   },
-  "show reload cause": {"resetCauses": [{"description": "Initiated by power cycle."}], "kernelCrashData": []},
-  "show environment temperature": {
+  "show processes top once": {
+    "cpuInfo": {
+      "%Cpu(s)": {
+        "user": 5.0,
+        "system": 2.5,
+        "nice": 0.0,
+        "idle": 92.0,
+        "iowait": 0.5
+      }
+    }
+  },
+  "show reload cause": {
+    "resetCauses": [
+      {
+        "description": "Initiated by power cycle."
+      }
+    ],
+    "kernelCrashData": []
+  },
+  "show system environment temperature": {
     "powerSupplySlots": [
-      {"relPos": "1", "tempSensors": [{"name": "PowerSupply1/1", "hwStatus": "ok", "currentTemperature": 30.0, "inAlertState": false}]}
+      {
+        "relPos": "1",
+        "tempSensors": [
+          {
+            "name": "PowerSupply1/1",
+            "hwStatus": "ok",
+            "currentTemperature": 30.0,
+            "inAlertState": false
+          }
+        ]
+      }
     ],
     "tempSensors": [],
     "systemStatus": "temperatureOk",
     "shutdownOnOverheat": true,
     "cardSlots": [
-      {"relPos": "Linecard3", "entPhysicalClass": "linecard", "tempSensors": [
-        {"name": "Cd3TempSensor1", "description": "Linecard 3 inlet", "hwStatus": "ok", "currentTemperature": 52.0, "inAlertState": false},
-        {"name": "Cd3TempSensor2", "description": "Linecard 3 asic", "hwStatus": "ok", "currentTemperature": 61.0, "inAlertState": false}
-      ]},
-      {"relPos": "Supervisor1", "entPhysicalClass": "supervisor", "tempSensors": [
-        {"name": "Sup1TempSensor1", "hwStatus": "ok", "currentTemperature": 40.0, "inAlertState": false}
-      ]}
+      {
+        "relPos": "Linecard3",
+        "entPhysicalClass": "linecard",
+        "tempSensors": [
+          {
+            "name": "Cd3TempSensor1",
+            "description": "Linecard 3 inlet",
+            "hwStatus": "ok",
+            "currentTemperature": 52.0,
+            "inAlertState": false
+          },
+          {
+            "name": "Cd3TempSensor2",
+            "description": "Linecard 3 asic",
+            "hwStatus": "ok",
+            "currentTemperature": 61.0,
+            "inAlertState": false
+          }
+        ]
+      },
+      {
+        "relPos": "Supervisor1",
+        "entPhysicalClass": "supervisor",
+        "tempSensors": [
+          {
+            "name": "Sup1TempSensor1",
+            "hwStatus": "ok",
+            "currentTemperature": 40.0,
+            "inAlertState": false
+          }
+        ]
+      }
     ]
   },
-  "show environment power": {
+  "show system environment power": {
     "powerSupplies": {
-      "1": {"state": "ok", "inputCurrent": 2.1, "outputCurrent": 20.0, "capacity": 3000.0, "outputPower": 240.0},
-      "2": {"state": "ok", "inputCurrent": 2.0, "outputCurrent": 19.5, "capacity": 3000.0, "outputPower": 235.0},
-      "3": {"state": "ok", "inputCurrent": 2.2, "outputCurrent": 21.0, "capacity": 3000.0, "outputPower": 250.0},
-      "4": {"state": "ok", "inputCurrent": 2.05, "outputCurrent": 19.8, "capacity": 3000.0, "outputPower": 238.0}
+      "1": {
+        "state": "ok",
+        "inputCurrent": 2.1,
+        "outputCurrent": 20.0,
+        "capacity": 3000.0,
+        "outputPower": 240.0
+      },
+      "2": {
+        "state": "ok",
+        "inputCurrent": 2.0,
+        "outputCurrent": 19.5,
+        "capacity": 3000.0,
+        "outputPower": 235.0
+      },
+      "3": {
+        "state": "ok",
+        "inputCurrent": 2.2,
+        "outputCurrent": 21.0,
+        "capacity": 3000.0,
+        "outputPower": 250.0
+      },
+      "4": {
+        "state": "ok",
+        "inputCurrent": 2.05,
+        "outputCurrent": 19.8,
+        "capacity": 3000.0,
+        "outputPower": 238.0
+      }
     }
   },
-  "show environment cooling": {
+  "show system environment cooling": {
     "systemStatus": "coolingOk",
     "fanTraySlots": [
-      {"label": "1", "status": "ok", "fans": [{"label": "1/1", "status": "ok", "actualSpeed": 8000}, {"label": "1/2", "status": "ok", "actualSpeed": 8100}]},
-      {"label": "2", "status": "ok", "fans": [{"label": "2/1", "status": "ok", "actualSpeed": 8050}, {"label": "2/2", "status": "ok", "actualSpeed": 8020}]}
+      {
+        "label": "1",
+        "status": "ok",
+        "fans": [
+          {
+            "label": "1/1",
+            "status": "ok",
+            "actualSpeed": 45
+          },
+          {
+            "label": "1/2",
+            "status": "ok",
+            "actualSpeed": 46
+          }
+        ]
+      },
+      {
+        "label": "2",
+        "status": "ok",
+        "fans": [
+          {
+            "label": "2/1",
+            "status": "ok",
+            "actualSpeed": 44
+          },
+          {
+            "label": "2/2",
+            "status": "ok",
+            "actualSpeed": 47
+          }
+        ]
+      }
     ],
     "powerSupplySlots": [],
     "ambientTemperature": 26.0,

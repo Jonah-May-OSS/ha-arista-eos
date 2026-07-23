@@ -75,9 +75,9 @@ async def test_environment_unsupported_creates_issue(
 ) -> None:
     """A switch without environment support raises a repair issue."""
     for cmd in (
-        "show environment temperature",
-        "show environment power",
-        "show environment cooling",
+        "show system environment temperature",
+        "show system environment power",
+        "show system environment cooling",
     ):
         switch.responses.pop(cmd)
 
@@ -101,9 +101,9 @@ async def test_environment_recovers_deletes_issue(
     saved = {
         cmd: switch.responses.pop(cmd)
         for cmd in (
-            "show environment temperature",
-            "show environment power",
-            "show environment cooling",
+            "show system environment temperature",
+            "show system environment power",
+            "show system environment cooling",
         )
     }
     await setup_integration(hass, config_entry)
@@ -199,7 +199,7 @@ async def test_environment_connection_error_fails_update(
 ) -> None:
     """A connection error while polling environment fails the update."""
     await setup_integration(hass, config_entry)
-    switch.raise_for = {"show environment temperature": EosConnectionError("boom")}
+    switch.raise_for = {"show system environment temperature": EosConnectionError("boom")}
     await config_entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
     assert config_entry.runtime_data.last_update_success is False
@@ -250,3 +250,18 @@ async def test_optional_connection_errors_fail_update(
     await config_entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
     assert config_entry.runtime_data.last_update_success is False
+
+
+async def test_environment_legacy_command_fallback(
+    hass: HomeAssistant, config_entry: MockConfigEntry, switch: FakeSwitch
+) -> None:
+    """When only the legacy 'show environment ...' commands exist, they are used."""
+    for role in ("temperature", "power", "cooling"):
+        switch.responses[f"show environment {role}"] = switch.responses.pop(
+            f"show system environment {role}"
+        )
+    await setup_integration(hass, config_entry)
+    data = config_entry.runtime_data.data
+    assert data.max_temperature == 45.5
+    assert data.total_output_power == 144.5
+    assert config_entry.runtime_data.last_update_success is True
