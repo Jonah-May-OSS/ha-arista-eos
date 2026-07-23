@@ -36,6 +36,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_VERIFY_SSL,
     DOMAIN,
+    LOGGER,
     MIN_SCAN_INTERVAL,
 )
 from .coordinator import AristaConfigEntry
@@ -63,6 +64,13 @@ async def _async_validate(hass: HomeAssistant, data: Mapping[str, Any]) -> dict[
         data[CONF_USERNAME],
         data[CONF_PASSWORD],
         port=data[CONF_PORT],
+    )
+    LOGGER.debug(
+        "Validating Arista eAPI at %s:%s (verify_ssl=%s, user=%s)",
+        data[CONF_HOST],
+        data[CONF_PORT],
+        data[CONF_VERIFY_SSL],
+        data[CONF_USERNAME],
     )
     result = await client.run_cmds([CMD_VERSION, CMD_HOSTNAME])
     version = result[0]
@@ -204,11 +212,19 @@ class AristaConfigFlow(ConfigFlow, domain=DOMAIN):
         """Validate and return (identity, errors)."""
         try:
             info = await _async_validate(self.hass, data)
-        except EosAuthError:
+        except EosAuthError as err:
+            LOGGER.debug("Arista eAPI auth failed for %s: %s", data.get(CONF_HOST), err)
             return None, {"base": "invalid_auth"}
-        except EosConnectionError:
+        except EosConnectionError as err:
+            LOGGER.warning(
+                "Arista eAPI connection to %s:%s failed: %s",
+                data.get(CONF_HOST),
+                data.get(CONF_PORT),
+                err,
+            )
             return None, {"base": "cannot_connect"}
-        except EosCommandError:
+        except EosCommandError as err:
+            LOGGER.warning("Arista eAPI command error from %s: %s", data.get(CONF_HOST), err)
             return None, {"base": "cannot_connect"}
         return info, {}
 
