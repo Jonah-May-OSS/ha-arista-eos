@@ -46,7 +46,7 @@ if TYPE_CHECKING:
             DhcpServiceInfo,
         )
     except ImportError:  # Home Assistant < 2025.2
-        from homeassistant.components.dhcp import (  # type: ignore[import-not-found, no-redef, unused-ignore]
+        from homeassistant.components.dhcp import (  # type: ignore[import-not-found, no-redef, attr-defined, unused-ignore]
             DhcpServiceInfo,
         )
 
